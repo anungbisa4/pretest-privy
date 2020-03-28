@@ -46,7 +46,7 @@
             lazy-rules
             :rules="[ val => val && val.length > 0 || 'Please type you fullname']"
             />
-          <q-input rounded outlined v-model="educationForm.graduation_time" placeholder="1990/1/1" mask="date" :rules="['date']">
+          <q-input rounded outlined v-model="educationForm.graduation_time" placeholder="Graduation tine" mask="date" :rules="['date']">
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
@@ -65,13 +65,13 @@
           <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Education" @click="isEdit = true"/>
         </div>
         <div v-if="dataProfile.education && dataProfile.education.school_name !== null" class="flex d-card-item">
-          <q-btn rounded  class="d-btn d-card-btn" label="Update" />
+          <q-btn rounded  class="d-btn d-card-btn" label="Update" @click="isEdit = true"/>
           <div class="d-card-item__avatar d-education-avatar">
             <span>ED</span>
           </div>
           <div class="d-card-item__content">
             <h1>{{ dataProfile.education && dataProfile.education.school_name }}</h1>
-            <span>2007</span>
+            <span>{{dataProfile.education && dataProfile.education.graduation_time}}</span>
           </div>
         </div>
         </div>
@@ -79,16 +79,29 @@
       <section class="d-card d-career">
         <h1 class="d-about__title d-title">Careers</h1>
         <div v-if="isEditCareer">
-        <q-form ref="editForm" @submit="onSubmitEdit('education')">
-          <q-input v-model="educationForm.school_name" rounded outlined placeholder="School" type="text"
+        <q-form ref="editForm" @submit="onSubmitEdit('career')">
+          <q-input v-model="careerForm.position" rounded outlined placeholder="Position" type="text"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type you fullname']"
+            :rules="[ val => val && val.length > 0 || 'Please type you position']"
             />
-          <q-input rounded outlined v-model="educationForm.graduation_time" placeholder="1990/1/1" mask="date" :rules="['date']">
+          <q-input v-model="careerForm.company_name" rounded outlined placeholder="Company name" type="text"
+            lazy-rules
+            :rules="[ val => val && val.length > 0 || 'Please type you position']"
+            />
+          <q-input rounded outlined v-model="careerForm.starting_from" placeholder="Starting from" mask="date" :rules="['date']">
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                    <q-date v-model="educationForm.graduation_time" @input="() => $refs.qDateProxy.hide()" />
+                    <q-date v-model="careerForm.starting_from" @input="() => $refs.qDateProxy.hide()" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          <q-input rounded outlined v-model="careerForm.ending_in" placeholder="End in" mask="date" :rules="['date']">
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="careerForm.ending_in" @input="() => $refs.qDateProxy.hide()" />
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -103,9 +116,9 @@
           <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Career" @click="isEditCareer = true"/>
         </div>
         <div v-if="dataProfile.career && dataProfile.career.company_name !== null" class="flex d-card-item">
-          <q-btn rounded  class="d-btn d-card-btn" label="Update" />
+          <q-btn rounded  class="d-btn d-card-btn" label="Update" @click="isEditCareer = true"/>
           <div class="d-card-item__avatar d-career-avatar">
-            <span>ED</span>
+            <span>CA</span>
           </div>
           <div class="d-card-item__content">
             <h1>{{dataProfile.career && dataProfile.career.company_name}}</h1>
@@ -170,7 +183,13 @@ export default {
       isEditCareer: false,
       educationForm: {
         school_name: '',
-        graduation_time: ''
+        company_name: ''
+      },
+      careerForm: {
+        position: '',
+        company_name: '',
+        starting_from: '',
+        ending_in: ''
       }
     }
   },
@@ -194,7 +213,6 @@ export default {
               type: 'positif',
               message: 'Succesfully'
             })
-            this.$router.push('/')
           })
         // eslint-disable-next-line handle-callback-err
           .catch((err) => {
@@ -208,7 +226,27 @@ export default {
           })
       }
       if (value === 'career') {
-
+        Loading.show()
+        this.$axios.post('/api/v1/profile/career', objectToFormData(this.careerForm))
+          .then(({ data }) => {
+            Loading.hide()
+            this.isEditCareer = false
+            this.initProfile()
+            Notify.create({
+              type: 'positif',
+              message: 'Succesfully'
+            })
+          })
+        // eslint-disable-next-line handle-callback-err
+          .catch((err) => {
+            Loading.hide()
+            this.isEditCareer = false
+            console.log(err)
+            Notify.create({
+              type: 'warning',
+              message: err.error.errors[0]
+            })
+          })
       }
     },
     initProfile () {
