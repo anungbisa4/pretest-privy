@@ -3,7 +3,7 @@
     <q-card class="dashboard-card">
       <section class="d-card d-edit-profile">
         <h1 class="d-about__title d-title">Edit Profile</h1>
-        <q-form ref="loginForm" @submit="onSubmit">
+        <q-form ref="editForm" @submit="onSubmit">
           <div class="register-card__content">
             <q-input v-model="dataForm.name" rounded outlined placeholder="Full name" type="text"
             lazy-rules
@@ -81,9 +81,7 @@ export default {
   },
   methods: {
     onSubmit () {
-      console.log(this.dataForm)
       Loading.show()
-      // this.$axios.defaults.headers.common.Authorization = LocalStorage.getItem('access_token')
       this.$axios.post('/api/v1/profile', objectToFormData(this.dataForm))
         .then(({ data }) => {
           Loading.hide()

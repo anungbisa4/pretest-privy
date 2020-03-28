@@ -40,35 +40,79 @@
       </div>
       <section class="d-card d-education">
         <h1 class="d-about__title d-title">Educations</h1>
-        <div v-if="dataProfile.education.school_name === null" :style="dataProfile.education.school_name !== null ? '' : 'text-align: center;'">
-          <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Education" />
+        <div v-if="isEdit">
+          <q-form ref="editForm" @submit="onSubmitEdit('education')">
+          <q-input v-model="educationForm.school_name" rounded outlined placeholder="School" type="text"
+            lazy-rules
+            :rules="[ val => val && val.length > 0 || 'Please type you fullname']"
+            />
+          <q-input rounded outlined v-model="educationForm.graduation_time" placeholder="1990/1/1" mask="date" :rules="['date']">
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="educationForm.graduation_time" @input="() => $refs.qDateProxy.hide()" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          <div style="text-align: center">
+            <q-btn rounded  class="d-btn d-btn-large" label="SAVE" type="submit" />
+          </div>
+          </q-form>
         </div>
-        <div v-if="dataProfile.education.school_name !== null" class="flex d-card-item">
+        <div v-if="!isEdit">
+          <div v-if="dataProfile.education && dataProfile.education.school_name === null" :style="dataProfile.education && dataProfile.education.school_name !== null ? '' : 'text-align: center;'">
+          <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Education" @click="isEdit = true"/>
+        </div>
+        <div v-if="dataProfile.education && dataProfile.education.school_name !== null" class="flex d-card-item">
           <q-btn rounded  class="d-btn d-card-btn" label="Update" />
           <div class="d-card-item__avatar d-education-avatar">
             <span>ED</span>
           </div>
           <div class="d-card-item__content">
-            <h1>{{ dataProfile.education.school_name }}</h1>
+            <h1>{{ dataProfile.education && dataProfile.education.school_name }}</h1>
             <span>2007</span>
           </div>
+        </div>
         </div>
       </section>
       <section class="d-card d-career">
         <h1 class="d-about__title d-title">Careers</h1>
-        <div v-if="dataProfile.career.company_name === null" :style="dataProfile.career.company_name !== null ? '' : 'text-align: center;'">
-          <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Career" />
+        <div v-if="isEditCareer">
+        <q-form ref="editForm" @submit="onSubmitEdit('education')">
+          <q-input v-model="educationForm.school_name" rounded outlined placeholder="School" type="text"
+            lazy-rules
+            :rules="[ val => val && val.length > 0 || 'Please type you fullname']"
+            />
+          <q-input rounded outlined v-model="educationForm.graduation_time" placeholder="1990/1/1" mask="date" :rules="['date']">
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="educationForm.graduation_time" @input="() => $refs.qDateProxy.hide()" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          <div style="text-align: center">
+            <q-btn rounded  class="d-btn d-btn-large" label="SAVE" type="submit" />
+          </div>
+          </q-form>
         </div>
-        <div v-if="dataProfile.career.company_name !== null" class="flex d-card-item">
+        <div v-if="!isEditCareer">
+        <div v-if="dataProfile.career && dataProfile.career.company_name === null" :style="dataProfile.career && dataProfile.career.company_name !== null ? '' : 'text-align: center;'">
+          <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Career" @click="isEditCareer = true"/>
+        </div>
+        <div v-if="dataProfile.career && dataProfile.career.company_name !== null" class="flex d-card-item">
           <q-btn rounded  class="d-btn d-card-btn" label="Update" />
           <div class="d-card-item__avatar d-career-avatar">
             <span>ED</span>
           </div>
           <div class="d-card-item__content">
-            <h1>{{dataProfile.career.company_name}}</h1>
+            <h1>{{dataProfile.career && dataProfile.career.company_name}}</h1>
             <!-- <h2>dataProfile.career.company_name</h2> -->
-            <span>{{dataProfile.career.starting_from}} - {{dataProfile.career.ending_in}}</span>
+            <span>{{dataProfile.career && dataProfile.career.starting_from}} - {{dataProfile.career && dataProfile.career.ending_in}}</span>
           </div>
+        </div>
         </div>
       </section>
       <section class="d-card d-gallery">
@@ -121,7 +165,13 @@ export default {
   data () {
     return {
       test: '',
-      dataProfile: {}
+      dataProfile: {},
+      isEdit: false,
+      isEditCareer: false,
+      educationForm: {
+        school_name: '',
+        graduation_time: ''
+      }
     }
   },
   created () {
@@ -132,12 +182,37 @@ export default {
     console.log(this.$store)
   },
   methods: {
+    onSubmitEdit (value) {
+      if (value === 'education') {
+        Loading.show()
+        this.$axios.post('/api/v1/profile/education', objectToFormData(this.educationForm))
+          .then(({ data }) => {
+            Loading.hide()
+            this.isEdit = false
+            this.initProfile()
+            Notify.create({
+              type: 'positif',
+              message: 'Succesfully'
+            })
+            this.$router.push('/')
+          })
+        // eslint-disable-next-line handle-callback-err
+          .catch((err) => {
+            Loading.hide()
+            this.isEdit = false
+            console.log(err)
+            Notify.create({
+              type: 'warning',
+              message: err.error.errors[0]
+            })
+          })
+      }
+      if (value === 'career') {
+
+      }
+    },
     initProfile () {
       Loading.show()
-      console.log('haha', this.$store.getters.getIsLogin)
-      // const config = {
-      //   auth: 'test ' + LocalStorage.getItem('access_token')
-      // }
       axios.defaults.headers.common.Authorization = LocalStorage.getItem('access_token')
       axios.get('/api/v1/profile/me')
         .then(({ data }) => {
