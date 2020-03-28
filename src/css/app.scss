@@ -1,1 +1,45 @@
 // app global css in SCSS form
+// html {
+//   width: auto;
+// }
+body {
+  background-color: #EFF2F9;
+}
+h1 {
+  margin: 0;
+  line-height: 2rem;
+}
+// .q-layout {
+//   margin: 5% 10%;
+// }
+.header {
+  h1 {
+    font-size: 2em;
+    font-weight: 500;
+    color: #5458F7;
+    text-align: center;
+  }
+}
+.q-page-container {
+  margin: 5% 10%;
+  margin-bottom: 0;
+}
+.main-env {
+  font-size: 30px;
+}
+// Form
+.login, .register, .verify {
+  .q-field__control {
+    background-color: #f2f2f2;
+  }
+  .q-field--outlined .q-field__control:before {
+    border: none;
+  }
+  input {
+    color : #979797;
+  }
+}
+
+.q-card__section--vert {
+  padding: 20px;
+}

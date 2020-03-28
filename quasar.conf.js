@@ -1,6 +1,8 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
+const envparsers = require('./config/envparser')
+
 module.exports = function (ctx) {
   return {
     // app boot file (/src/boot)
@@ -47,7 +49,14 @@ module.exports = function (ctx) {
       directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        'LocalStorage',
+        'SessionStorage',
+        'Notify'
+      ],
+      config: {
+        notify: { /* look at QUASARCONFOPTIONS from the API card (bottom of page) */ }
+      }
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -55,7 +64,8 @@ module.exports = function (ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: 'history', // available values: 'hash', 'history'
+      env: envparsers(),
 
       // rtl: false, // https://quasar.dev/options/rtl-support
       // showProgress: false,
@@ -82,7 +92,10 @@ module.exports = function (ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      https: false,
+      allowedHosts: [
+        'pretest-qa.privydev.id'
+      ],
+      https: true,
       port: 8080,
       open: true // opens browser window automatically
     },

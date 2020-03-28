@@ -1,14 +1,20 @@
 <template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-full.svg"
-    >
+  <q-page class="flex main-env">
+    {{test}}
   </q-page>
 </template>
 
 <script>
 export default {
-  name: 'PageIndex'
+  name: 'PageIndex',
+  data () {
+    return {
+      test: process.env.API_PRETEST
+    }
+  },
+  mounted () {
+    // eslint-disable-next-line no-undef
+    console.log(this.test)
+  }
 }
 </script>
