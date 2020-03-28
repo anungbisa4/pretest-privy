@@ -136,9 +136,9 @@
               <img :src="item.picture.url" :alt="index">
             </div>
           </div>
-          <!-- <div class="col-4">
+          <!-- <div class="col-4" v-for="(item, index) in dataProfile.user_pictures" :key="index">
             <div class="d-gallery-item">
-              <img src="statics/cover-sample.jpeg" alt="">
+              <img :src="item.picture.url" :alt="index">
               <div class="d-img-overlay"></div>
               <div class="d-img-blur" style="background-image:url('statics/cover-sample.jpeg')"></div>
             </div>
@@ -566,9 +566,20 @@ export default {
           position : relative;
         }
         .d-gallery-item {
+          height: 200px;
+          position: relative;
+          background: #f8f9fa;
           img {
-            width : 100%;
-            height : 100%;
+              max-height: 100%;
+              max-width: 100%;
+              width: auto;
+              height: auto;
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              margin: auto;
           }
         }
         .d-gallery-btn {
