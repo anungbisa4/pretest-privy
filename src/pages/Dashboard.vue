@@ -131,24 +131,9 @@
       <section class="d-card d-gallery">
         <h1 class="d-about__title d-title">Photos</h1>
         <div class="row">
-          <div class="col-4">
+          <div class="col-4" v-for="(item, index) in dataProfile.user_pictures" :key="index">
             <div class="d-gallery-item">
-              <img src="statics/avatar-sample.jpeg" alt="">
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="d-gallery-item">
-              <img src="statics/avatar-sample.jpeg" alt="">
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="d-gallery-item">
-              <img src="statics/avatar-sample.jpeg" alt="">
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="d-gallery-item">
-              <img src="statics/avatar-sample.jpeg" alt="">
+              <img :src="item.picture.url" :alt="index">
             </div>
           </div>
           <!-- <div class="col-4">
@@ -160,10 +145,63 @@
           </div> -->
         </div>
         <div class="d-gallery-btn">
-          <q-btn rounded  class="d-btn" label="Upload" />
+        <q-btn rounded  class="d-btn" label="Upload" @click="isUploadMultiple = true"/>
         </div>
       </section>
     </q-card>
+    <q-dialog v-model="isUploadMultiple">
+      <q-card>
+        <div class="q-pa-md">
+      <q-uploader
+      url="http://localhost:8080/uploads"
+      label="Upload your images"
+      :factory="factoryFn"
+      multiple
+    >
+      <template v-slot:list="scope">
+        <q-list separator>
+          <q-item v-for="file in scope.files" :key="file.name">
+            <q-item-section>
+              <q-item-label class="full-width ellipsis">
+                {{ file.name }}
+              </q-item-label>
+
+              <q-item-label caption>
+                {{ file.__sizeLabel }}
+              </q-item-label>
+            </q-item-section>
+
+            <q-item-section
+              v-if="file.__img"
+              thumbnail
+              class="gt-xs"
+            >
+              <img :src="file.__img.src">
+            </q-item-section>
+
+            <q-item-section top side>
+              <q-btn
+                class="gt-xs"
+                size="12px"
+                flat
+                dense
+                round
+                icon="delete"
+                @click="scope.removeFile(file)"
+              />
+            </q-item-section>
+          </q-item>
+
+        </q-list>
+      </template>
+    </q-uploader>
+          </div>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Close" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -181,6 +219,7 @@ export default {
       dataProfile: {},
       isEdit: false,
       isEditCareer: false,
+      isUploadMultiple: false,
       educationForm: {
         school_name: '',
         company_name: ''
@@ -201,6 +240,25 @@ export default {
     console.log(this.$store)
   },
   methods: {
+    factoryFn (file) {
+      return new Promise((resolve, reject) => {
+        this.$axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+        const fileData = new FormData()
+        fileData.append('image', file[0])
+        const response = this.$axios.post('/api/v1/uploads/profile', fileData)
+        response.then((res) => {
+          if (res.status === 201) {
+            this.isUploadMultiple = false
+            this.initProfile()
+            Notify.create({
+              type: 'positif',
+              message: 'Upload Succesfully'
+            })
+          }
+        })
+        resolve(response)
+      })
+    },
     onSubmitEdit (value) {
       if (value === 'education') {
         Loading.show()
