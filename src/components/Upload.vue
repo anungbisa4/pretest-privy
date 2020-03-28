@@ -1,20 +1,48 @@
 <template>
   <div>
-    <q-dialog v-model="alert">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">Alert</div>
-        </q-card-section>
+  <q-uploader
+      url="http://localhost:8080/uploads"
+      label="Upload your images"
+      :factory="factory"
+      :multiple="multiple"
+    >
+      <template v-slot:list="scope">
+        <q-list separator>
+          <q-item v-for="file in scope.files" :key="file.name">
+            <q-item-section>
+              <q-item-label class="full-width ellipsis">
+                {{ file.name }}
+              </q-item-label>
 
-        <q-card-section class="q-pt-none">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro labore.
-        </q-card-section>
+              <q-item-label caption>
+                {{ file.__sizeLabel }}
+              </q-item-label>
+            </q-item-section>
 
-        <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+            <q-item-section
+              v-if="file.__img"
+              thumbnail
+              class="gt-xs"
+            >
+              <img :src="file.__img.src">
+            </q-item-section>
+
+            <q-item-section top side>
+              <q-btn
+                class="gt-xs"
+                size="12px"
+                flat
+                dense
+                round
+                icon="delete"
+                @click="scope.removeFile(file)"
+              />
+            </q-item-section>
+          </q-item>
+
+        </q-list>
+      </template>
+      </q-uploader>
   </div>
 </template>
 
@@ -22,8 +50,9 @@
 export default {
   name: 'upload',
   props: {
-    status: Boolean
-
+    status: Boolean,
+    factory: Function,
+    multiple: Boolean
   },
   data () {
     return {

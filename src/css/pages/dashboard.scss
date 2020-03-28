@@ -1,0 +1,257 @@
+.dashboard {
+  justify-content: center;
+  .icon-edit {
+    z-index: 1;
+    background-color: #5458F7;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+  }
+  .d-img-overlay{
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    background: #00000061;
+  }
+  .d-img-blur{
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-size: cover;
+    -webkit-filter: blur(2px);
+    filter: blur(2px);
+  }
+  .d-btn {
+    background-color: #5458F7;
+    color: #ffffff;
+    font-size: 12px;
+    text-transform: capitalize;
+    &.d-btn__outline {
+      color : #5458F7;
+    }
+    &.d-btn__grey {
+      color : #9597A1;
+    }
+    &.d-btn-margin {
+      margin:30px;
+    }
+  }
+  .d-title {
+    color : #9597A1;
+    font-size: 12px;
+  }
+  .dashboard-card {
+    margin : 20px;
+    width : 100%;
+    border-radius: 20px;
+    padding-bottom: 50px;
+    box-shadow : 0px 0px 5px rgba(0, 0, 0, 0.2),
+                0 2px 2px rgba(0, 0, 0, 0),
+                0 10px 1px -2px rgba(0, 0, 0, 0);
+    .dashboard-cover {
+      position : relative;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      vertical-align: baseline;
+      background: transparent;
+      width: 100%;
+      padding-bottom: 25%;
+      .dashboard-cover-img {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+      }
+      .dashboard-cover-img__image {
+        width: 100%;
+        height : 100%;
+      }
+    }
+    .d-avatar {
+      position : relative;
+      justify-content: center;
+      margin-top: -80px;
+      .d-avatar-icon__bottom {
+        bottom: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .d-avatar-middle--photo {
+        width: 160px;
+        height: 160px;
+        box-sizing: border-box;
+        background-clip: content-box;
+        border: 0 solid transparent;
+        border-radius: 49.9%;
+        background-color: rgba(243,246,248,.94);
+        box-shadow: inset 0 1.5px 3px 0 rgba(0,0,0,.15), 0 1.5px 3px 0 rgba(0,0,0,.15);
+        margin: auto;
+        position: relative;
+        .d-avatar-wrap {
+          background-color: transparent;
+          display: block;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          margin: 0 auto;
+          position: relative;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          box-sizing: border-box;
+          button {
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+          }
+          .d-avatar-img__image {
+            border-radius: 50%;
+            width: 152px;
+            height: 152px;
+          }
+        }
+      }
+    }
+    .d-profile {
+      position: relative;
+      text-align : center;
+      padding : 10px;
+      .d-profile-abs {
+        position : absolute;
+        right: 30px;
+      }
+      .d-profile-pd {
+        padding: 0 5px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      h2 {
+        font-size: 14px;
+        line-height: normal;
+        text-align: center;
+        margin: 0;
+        color : #9597A1;
+      }
+    }
+    .d-about {
+      width: 50%;
+      margin: 0 auto;
+      background-color: #ececee;
+      border-radius: 16px;
+      padding: 10px 20px;
+      font-size: 12px;
+    }
+    .d-card {
+      position : relative;
+      width: 50%;
+      margin: 30px auto 0 auto;
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 10px 20px;
+      font-size: 12px;
+      box-shadow : 1px 8px 16px rgba(0, 0, 0, .08);
+      .d-card-btn {
+        position : absolute;
+        right: 30px;
+        bottom: -15px;
+      }
+      .d-card-item {
+        margin: 0 10px;
+        align-items: center;
+        &:not(:last-child) {
+        border-bottom: 1px solid #f4f4f4;
+         }
+          .d-card-item__avatar {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: #cdf4e9;
+            color: #00CC99;
+            text-transform: uppercase;
+            border-radius: 50px;
+            span {
+              position : absolute;
+              left: 50%;
+              top : 50%;
+              transform : translate(-50%, -50%);
+            }
+          }
+          .d-card-item__content {
+            padding: 10px;
+            h1 {
+              line-height : normal;
+              font-size: 14px;
+              font-weight: 300;
+            }
+            span {
+              font-size : 12px;
+              font-weight: 300;
+              color : #9597A1;
+            }
+          }
+      }
+    }
+    .d-career {
+      .d-career-avatar {
+        background-color : #eae5ff !important;
+        color : #B2A1FF !important;
+      }
+      h2 {
+        font-size: 12px;
+        margin: 0;
+        line-height: normal;
+        color: #9597A1 !important;
+      }
+    }
+    .d-gallery {
+      .col-4 {
+        padding: 1px;
+        position : relative;
+      }
+      .d-gallery-item {
+        height: 150px;
+        position: relative;
+        background: #f8f9fa;
+        img {
+            max-height: 100%;
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+      }
+      .d-gallery-btn {
+          text-align: center;
+          padding: 20px;
+        button {
+          padding: 0 25px;
+        }
+      }
+    }
+  }
+}
