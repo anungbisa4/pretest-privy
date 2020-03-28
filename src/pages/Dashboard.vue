@@ -19,7 +19,9 @@
       </div>
       <div class="d-profile">
         <div class="flex d-profile-abs">
-          <div class="d-msg d-profile-pd"><q-btn rounded  class="d-btn" label="Edit profile" /></div>
+          <div class="d-msg d-profile-pd">
+            <router-link to="/edit-profile"><q-btn rounded  class="d-btn" label="Edit profile" /></router-link>
+          </div>
           <div class="d-inbox d-profile-pd"><q-btn outline class="d-btn d-btn__outline" rounded>
             <q-icon name="inbox"></q-icon>
           </q-btn>
