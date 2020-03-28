@@ -19,66 +19,53 @@
       </div>
       <div class="d-profile">
         <div class="flex d-profile-abs">
-          <div class="d-msg d-profile-pd"><q-btn rounded  class="d-btn" label="Message" /></div>
+          <div class="d-msg d-profile-pd"><q-btn rounded  class="d-btn" label="Edit profile" /></div>
           <div class="d-inbox d-profile-pd"><q-btn outline class="d-btn d-btn__outline" rounded>
             <q-icon name="inbox"></q-icon>
           </q-btn>
           </div>
           <div class="d-logout d-profile-pd"><q-btn outline class="d-btn d-btn__outline d-btn__grey" rounded label="Logout" /></div>
         </div>
-        <h1>Anung Aninditha</h1>
-        <h2>Indonesia</h2>
+        <h1>{{dataProfile.name}}</h1>
+        <h2>{{dataProfile.gender || 'Your Gender '}},{{ dataProfile.hometown || ' Hometown' }}</h2>
       </div>
       <div class="d-about">
         <h1 class="d-about__title d-title">About</h1>
-        <div class="d-about__content">
-          <p>I have excellent experience Frontend developer and exited with ui/ux. Dedicated and passionate software engineer, Badminton addict. Currently very interested in web technology. Fun experiment with new technology. "Talk Less Do More"</p>
+        <div class="d-about__content" :style="dataProfile.bio !== null ? '' : 'text-align: center;'">
+          <p v-if="dataProfile.bio !== null">fsdfs{{dataProfile.bio}}</p>
+          <q-btn v-else rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Bio" />
         </div>
       </div>
       <section class="d-card d-education">
-        <q-btn rounded  class="d-btn d-card-btn" label="Update" />
         <h1 class="d-about__title d-title">Educations</h1>
-        <div class="flex d-card-item">
+        <div v-if="dataProfile.education.school_name === null" :style="dataProfile.education.school_name !== null ? '' : 'text-align: center;'">
+          <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Education" />
+        </div>
+        <div v-if="dataProfile.education.school_name !== null" class="flex d-card-item">
+          <q-btn rounded  class="d-btn d-card-btn" label="Update" />
           <div class="d-card-item__avatar d-education-avatar">
             <span>ED</span>
           </div>
           <div class="d-card-item__content">
-            <h1>SMP 3 MOJOSONGO BOYOLALI</h1>
+            <h1>{{ dataProfile.education.school_name }}</h1>
             <span>2007</span>
           </div>
         </div>
       </section>
       <section class="d-card d-career">
-        <q-btn rounded  class="d-btn d-card-btn" label="Update" />
         <h1 class="d-about__title d-title">Careers</h1>
-        <div class="flex d-card-item">
-          <div class="d-card-item__avatar d-career-avatar">
-            <span>ED</span>
-          </div>
-          <div class="d-card-item__content">
-            <h1>OKTAGON</h1>
-            <h2>Frontend Web Developer</h2>
-            <span>2007 - 2010</span>
-          </div>
+        <div v-if="dataProfile.career.company_name === null" :style="dataProfile.career.company_name !== null ? '' : 'text-align: center;'">
+          <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Career" />
         </div>
-        <div class="flex d-card-item">
+        <div v-if="dataProfile.career.company_name !== null" class="flex d-card-item">
+          <q-btn rounded  class="d-btn d-card-btn" label="Update" />
           <div class="d-card-item__avatar d-career-avatar">
             <span>ED</span>
           </div>
           <div class="d-card-item__content">
-            <h1>OKTAGON</h1>
-            <h2>Frontend Web Developer</h2>
-            <span>2007 - 2010</span>
-          </div>
-        </div>
-        <div class="flex d-card-item">
-          <div class="d-card-item__avatar d-career-avatar">
-            <span>ED</span>
-          </div>
-          <div class="d-card-item__content">
-            <h1>OKTAGON</h1>
-            <h2>Frontend Web Developer</h2>
-            <span>2007 - 2010</span>
+            <h1>{{dataProfile.career.company_name}}</h1>
+            <!-- <h2>dataProfile.career.company_name</h2> -->
+            <span>{{dataProfile.career.starting_from}} - {{dataProfile.career.ending_in}}</span>
           </div>
         </div>
       </section>
@@ -126,6 +113,7 @@
 import { Loading, LocalStorage, Notify } from 'quasar'
 // eslint-disable-next-line no-unused-vars
 import { objectToFormData } from 'object-to-formdata'
+import axios from 'axios'
 export default {
   name: 'login',
   data () {
@@ -144,16 +132,16 @@ export default {
   methods: {
     initProfile () {
       Loading.show()
-      console.log(LocalStorage.getItem('access_token'))
+      console.log('haha', this.$store.getters.getIsLogin)
       // const config = {
       //   auth: 'test ' + LocalStorage.getItem('access_token')
       // }
-      this.$axios.defaults.headers.common.Authorization = '757cc833a6910bedc048e0f23637a899a913b52e6e603d5f77314bf6525d4765'
-      this.$axios.get(this.$API + '/profile/me')
+      axios.defaults.headers.common.Authorization = LocalStorage.getItem('access_token')
+      axios.get('/api/v1/profile/me')
         .then(({ data }) => {
           Loading.hide()
-          this.dataProfile = data
-          console.log(data)
+          this.dataProfile = data.data.user
+          console.log(data.data)
         })
         // eslint-disable-next-line handle-callback-err
         .catch((err) => {
@@ -161,6 +149,15 @@ export default {
           console.log(err)
         })
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next((vm) => {
+      console.log(vm.$store)
+      if (!vm.$store.getters.getIsLogin) {
+        vm.$router.push('/login')
+      }
+    })
+    next()
   }
 }
 </script>
@@ -207,6 +204,9 @@ export default {
       }
       &.d-btn__grey {
         color : #9597A1;
+      }
+      &.d-btn-margin {
+        margin:30px;
       }
     }
     .d-title {

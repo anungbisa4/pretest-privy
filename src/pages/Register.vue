@@ -26,7 +26,7 @@
 
 <script>
 import { uuid } from 'vue-uuid'
-import { Platform, Loading } from 'quasar'
+import { Platform, Loading, Notify, LocalStorage } from 'quasar'
 import { objectToFormData } from 'object-to-formdata'
 export default {
   name: 'register',
@@ -56,19 +56,12 @@ export default {
         device_type: this.deviceType
       }
       Loading.show()
-      this.$axios.post(this.$API + '/register', objectToFormData(dataForm))
+      this.$axios.post('/api/v1/register', objectToFormData(dataForm))
         .then(({ data }) => {
           this.userId = data.data.user.id
-        })
-        // eslint-disable-next-line handle-callback-err
-        .catch((err) => {
-          Loading.hide()
-          console.log(err)
-        })
-        .then(
-          this.$axios.post(this.$API + '/register/otp/request', 'phone=' + this.phoneNumber)
+          this.$axios.post('/api/v1/register/otp/request', 'phone=' + this.phoneNumber)
             .then(({ data }) => {
-              console.log(data)
+              LocalStorage.set('user_id', data.data.user.id)
               Loading.hide()
               this.$router.push('/verify')
             })
@@ -77,7 +70,28 @@ export default {
               Loading.hide()
               console.log(err)
             })
-        )
+        })
+        // eslint-disable-next-line handle-callback-err
+        .catch((err) => {
+          Loading.hide()
+          console.log(err.data)
+          Notify.create({
+            message: err.data.error.errors[0]
+          })
+        })
+        // .then(
+        //   this.$axios.post('/api/v1/register/otp/request', 'phone=' + this.phoneNumber)
+        //     .then(({ data }) => {
+        //       console.log(data)
+        //       Loading.hide()
+        //       this.$router.push('/verify')
+        //     })
+        //   // eslint-disable-next-line handle-callback-err
+        //     .catch((err) => {
+        //       Loading.hide()
+        //       console.log(err)
+        //     })
+        // )
     }
   }
 }

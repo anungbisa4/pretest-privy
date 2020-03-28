@@ -102,7 +102,7 @@ export default {
         user_id: LocalStorage.getItem('user_id'),
         otp_code: this.code[0] + this.code[1] + this.code[2] + this.code[3]
       }
-      this.$axios.post(this.$API + '/register/otp/match', objectToFormData(formData))
+      this.$axios.post('/api/v1/register/otp/match', objectToFormData(formData))
         .then(({ data }) => {
           Loading.hide()
           // eslint-disable-next-line prefer-const
@@ -124,7 +124,7 @@ export default {
     },
     onSendCode () {
       Loading.show()
-      this.$axios.post(this.$API + '/register/otp/request', 'phone=' + this.phoneNumber)
+      this.$axios.post('/api/v1/register/otp/request', 'phone=' + this.phoneNumber)
         .then(({ data }) => {
           Loading.hide()
           // eslint-disable-next-line prefer-const
