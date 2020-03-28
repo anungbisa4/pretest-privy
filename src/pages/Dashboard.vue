@@ -32,8 +32,10 @@
       <div class="d-about">
         <h1 class="d-about__title d-title">About</h1>
         <div class="d-about__content" :style="dataProfile.bio !== null ? '' : 'text-align: center;'">
-          <p v-if="dataProfile.bio !== null">fsdfs{{dataProfile.bio}}</p>
-          <q-btn v-else rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Bio" />
+          <p v-if="dataProfile.bio !== null">{{dataProfile.bio}}</p>
+          <div v-else>
+            <router-link to="/edit-profile"><q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Bio" /></router-link>
+          </div>
         </div>
       </div>
       <section class="d-card d-education">

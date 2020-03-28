@@ -4,7 +4,8 @@ const routes = [
     path: '/',
     component: () => import('layouts/DashboardLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Dashboard.vue') }
+      { path: '', component: () => import('pages/Dashboard.vue') },
+      { path: 'edit-profile', component: () => import('pages/EditProfile.vue') }
     ]
   },
   {
