@@ -329,14 +329,6 @@ export default {
           console.log(err)
         })
     }
-  },
-  beforeRouteEnter (to, from, next) {
-    next((vm) => {
-      if (!LocalStorage.getItem('access_token')) {
-        vm.$router.push('/login')
-      }
-    })
-    next()
   }
 }
 </script>

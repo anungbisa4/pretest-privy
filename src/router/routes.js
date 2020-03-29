@@ -8,7 +8,7 @@ const routes = [
       { path: 'edit-profile', component: () => import('pages/EditProfile.vue') }
     ],
     meta: {
-      auth: true
+      requiresAuth: true
     }
   },
   {
