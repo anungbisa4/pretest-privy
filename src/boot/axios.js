@@ -32,17 +32,16 @@ export default async ({ app, router, store, Vue }) => {
       let response = ''
       axios.defaults.headers.common.Authorization = LocalStorage.getItem('access_token') || ''
       if (method === 'post') {
-        return new Promise((resolve, reject) => {
-          response = axios.post(url, data)
-          if (response.status === 401) {
-            LocalStorage.removeItem('access_token')
-            console.log('401')
-            router.push('/login')
-          } else if (response.status >= 200 && response.status <= 300) {
-            console.log('401')
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+          try {
+            response = await axios.post(url, data)
             resolve(response)
-          } else {
-            reject(response)
+          } catch ({ data }) {
+            if (data.error.code >= 300) {
+              router.push('/login')
+            }
+            reject(data)
           }
         })
       }

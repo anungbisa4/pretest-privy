@@ -46,7 +46,7 @@ export default {
   },
   mounted () {
     // eslint-disable-next-line no-undef
-    console.log(this.test)
+    console.log(this.$store)
   },
   methods: {
     linkRegister () {
@@ -60,7 +60,6 @@ export default {
       }
     },
     onSubmit () {
-      Loading.show()
       const dataForm = {
         phone: this.phoneNumber,
         password: this.password,
@@ -68,20 +67,23 @@ export default {
         device_token: this.deviceToken,
         device_type: this.deviceType
       }
-      this.$axios.post('/api/v1/oauth/sign_in', objectToFormData(dataForm))
-        .then(({ data }) => {
-          Loading.hide()
-          LocalStorage.set('access_token', data.data.user.access_token)
-          this.$router.push('/')
-        })
-        // eslint-disable-next-line handle-callback-err
-        .catch((err) => {
-          Loading.hide()
-          console.log(err)
-          Notify.create({
-            message: 'Error login, Please try again'
-          })
-        })
+      this.$store.dispatch('login', objectToFormData(dataForm))
+        .then(() => this.$router.push('/'))
+        .catch(err => console.log(err))
+      // this.$axios.post('/api/v1/oauth/sign_in', objectToFormData(dataForm))
+      //   .then(({ data }) => {
+      //     Loading.hide()
+      //     LocalStorage.set('access_token', data.data.user.access_token)
+      //     this.$router.push('/')
+      //   })
+      //   // eslint-disable-next-line handle-callback-err
+      //   .catch((err) => {
+      //     Loading.hide()
+      //     console.log(err)
+      //     Notify.create({
+      //       message: 'Error login, Please try again'
+      //     })
+      //   })
     }
   }
 }
