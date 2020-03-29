@@ -247,7 +247,7 @@ export default {
   },
   created () {
     this.initProfile()
-    this.$store.dispatch('getInbox', '9926223e-23e6-4388-82ae-775cbeb6935b')
+    this.$store.dispatch('getInbox', LocalStorage.getItem('user_id') || '9926223e-23e6-4388-82ae-775cbeb6935b')
   },
   mounted () {
     // eslint-disable-next-line no-undef
@@ -333,7 +333,7 @@ export default {
         this.$store.dispatch('sendMessage', objectToFormData(data))
           .then(
             this.isMessage = false,
-            this.$store.dispatch('getInbox', '9926223e-23e6-4388-82ae-775cbeb6935b')
+            this.$store.dispatch('getInbox', LocalStorage.getItem('user_id') || '9926223e-23e6-4388-82ae-775cbeb6935b')
           )
           .catch(this.isMessage = false)
       }
