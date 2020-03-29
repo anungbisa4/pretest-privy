@@ -1,5 +1,15 @@
 .dashboard {
   justify-content: center;
+  .d-overlay {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.5s ease;
+  }
   .icon-edit {
     z-index: 1;
     background-color: #5458F7;
@@ -234,6 +244,20 @@
         height: 150px;
         position: relative;
         background: #f8f9fa;
+        .d-btn {
+          opacity: 0;
+          transition: opacity .35s ease;
+        } 
+        &:hover {
+          .d-overlay {
+            display: block;
+            background: rgba(0, 0, 0, .3);
+          }
+          .d-btn {
+            opacity: 1;
+            z-index: 3;
+          }
+        }
         img {
             max-height: 100%;
             max-width: 100%;

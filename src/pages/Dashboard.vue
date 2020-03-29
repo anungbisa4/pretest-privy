@@ -151,7 +151,7 @@
         </div>
         <div v-if="listMsg !== ''" class="flex d-card-item">
           <q-btn rounded  class="d-btn d-card-btn" label="Message" @click="isMessage = true"/>
-          <div class="flex d-card-item" v-for="(item, index) in listMsg" :key="index">
+          <div class="flex d-card-item" v-for="(item, index) in listMsg" :key="index" style="width: 100%;">
             <div class="d-card-item__avatar d-career-avatar">
               <span>MSG</span>
             </div>
@@ -168,6 +168,8 @@
         <div class="row">
           <div class="col-4" v-for="(item, index) in listProfile.user_pictures" :key="index">
             <div class="d-gallery-item">
+              <q-btn rounded  class="d-btn d-card-btn" label="Delete" @click="deletPic(item.id)"/>
+              <div class="d-overlay"></div>
               <img :src="item.picture.url" :alt="index">
             </div>
           </div>
@@ -314,6 +316,9 @@ export default {
         resolve(response)
       })
     },
+    deletPic (id) {
+      this.$store.dispatch('deletePic', id)
+    },
     onSubmitEdit (value) {
       if (value === 'education') {
         this.$store.dispatch('updateEducation', objectToFormData(this.educationForm))
@@ -327,7 +332,7 @@ export default {
       }
       if (value === 'msg') {
         const data = {
-          user_id: this.$store.getters.getUserId,
+          user_id: LocalStorage.getItem('user_id') || this.$store.getters.getUserId,
           message: this.msg.message
         }
         this.$store.dispatch('sendMessage', objectToFormData(data))

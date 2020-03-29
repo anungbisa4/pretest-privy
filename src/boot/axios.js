@@ -45,6 +45,20 @@ export default async ({ app, router, store, Vue }) => {
           }
         })
       }
+      if (method === 'delete') {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+          try {
+            response = await axios.delete(url)
+            resolve(response)
+          } catch ({ data }) {
+            if (data.error.code === 401) {
+              router.push('/login')
+            }
+            reject(data)
+          }
+        })
+      }
       if (method === 'get') {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {

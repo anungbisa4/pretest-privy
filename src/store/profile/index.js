@@ -132,6 +132,30 @@ export default {
           })
       })
     },
+    deletePic ({ commit, state }, payload) {
+      // eslint-disable-next-line no-async-promise-executor
+      return new Promise(async (resolve, reject) => {
+        Loading.show()
+        await this._vm.$fetchApi('/api/v1/uploads/profile?id=' + payload, 'delete')
+          .then(({ data }) => {
+            Loading.hide()
+            Notify.create({
+              type: 'positif',
+              message: 'Deleted'
+            })
+            resolve(data)
+          })
+        // eslint-disable-next-line handle-callback-err
+          .catch((err) => {
+            Loading.hide()
+            Notify.create({
+              type: 'warning',
+              message: err.error.errors[0]
+            })
+            reject(err)
+          })
+      })
+    },
     getInbox ({ commit, state }, payload) {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve, reject) => {
