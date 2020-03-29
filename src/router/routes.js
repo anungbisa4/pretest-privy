@@ -6,7 +6,10 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Dashboard.vue') },
       { path: 'edit-profile', component: () => import('pages/EditProfile.vue') }
-    ]
+    ],
+    meta: {
+      auth: true
+    }
   },
   {
     path: '',

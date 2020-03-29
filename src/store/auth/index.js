@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { Loading, LocalStorage, Notify } from 'quasar'
+import axios from 'axios'
 
 export default {
   state: {
@@ -10,7 +11,7 @@ export default {
   },
   getters: {
     getIsLogin (state) {
-      return state.isLogin
+      return !!state.token
     }
   },
   mutations: {
@@ -18,6 +19,11 @@ export default {
       state.token = token
       state.status = 'success'
       state.user = user
+    },
+    AUTH_LOGOUT (state) {
+      state.token = ''
+      state.status = 'logout'
+      state.user = ''
     }
   },
   actions: {
@@ -42,6 +48,31 @@ export default {
             })
             localStorage.removeItem('access_token')
             reject(err)
+          })
+      })
+    },
+    logout ({ commit, state }, payload) {
+      // eslint-disable-next-line no-async-promise-executor
+      return new Promise(async (resolve, reject) => {
+        Loading.show()
+        await this._vm.$fetchApi('/api/v1/oauth/revoke', 'post', payload)
+          .then(({ data }) => {
+            console.log(data)
+            Loading.hide()
+            resolve()
+          })
+        // eslint-disable-next-line handle-callback-err
+          .catch((err) => {
+            Loading.hide()
+            commit('AUTH_LOGOUT')
+            console.log(err.error.code)
+            // eslint-disable-next-line dot-notation
+            delete axios.defaults.headers.common['Authorization']
+            Notify.create({
+              message: 'Logout success'
+            })
+            localStorage.removeItem('access_token')
+            reject()
           })
       })
     }

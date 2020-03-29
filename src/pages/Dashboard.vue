@@ -212,11 +212,7 @@ export default {
         access_token: LocalStorage.getItem('access_token'),
         confirm: 1
       }
-      this.$axios.post('/api/v1/oauth/revoke', objectToFormData(formData))
-        .then((res) => {
-          console.log(res)
-        })
-        .catch((err) => console.log(err))
+      this.$store.dispatch('logout', objectToFormData(formData))
     },
     factoryFnSingle (file) {
       return new Promise((resolve, reject) => {
