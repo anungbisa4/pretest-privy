@@ -168,7 +168,10 @@
         <div class="row">
           <div class="col-4" v-for="(item, index) in listProfile.user_pictures" :key="index">
             <div class="d-gallery-item">
-              <q-btn rounded  class="d-btn d-card-btn" label="Delete" @click="deletPic(item.id)"/>
+              <div class="overlay-button">
+                <q-btn rounded outline  class="d-btn d-card-btn" label="Delete" @click="deletPic(item.id)"/>
+                <q-btn rounded  class="d-btn d-card-btn" label="Set profile" @click="onSetProfile(item.id)"/>
+              </div>
               <div class="d-overlay"></div>
               <img :src="item.picture.url" :alt="index">
             </div>
@@ -282,6 +285,22 @@ export default {
         resolve(response)
       })
     },
+    onSetProfile (id) {
+      this.setDefaultPic(id)
+    },
+    setDefaultPic (id) {
+      this.$axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+      const response = this.$axios.post('/api/v1/uploads/profile/default', 'id=' + id)
+      response.then((res) => {
+        if (res.status === 201) {
+          this.initProfile()
+          Notify.create({
+            type: 'positif',
+            message: 'Upload Succesfully'
+          })
+        }
+      })
+    },
     factoryFn (file) {
       return new Promise((resolve, reject) => {
         this.$axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
@@ -293,17 +312,7 @@ export default {
             this.isUploadMultiple = false
             if (this.isUserPicture) {
               this.isUserPicture = false
-              this.$axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-              const response = this.$axios.post('/api/v1/uploads/profile/default', 'id=' + res.data.data.user_picture.id)
-              response.then((res) => {
-                if (res.status === 201) {
-                  this.initProfile()
-                  Notify.create({
-                    type: 'positif',
-                    message: 'Upload Succesfully'
-                  })
-                }
-              })
+              this.setDefaultPic(res.data.data.user_picture.id)
             } else {
               this.initProfile()
               Notify.create({

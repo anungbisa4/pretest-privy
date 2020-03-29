@@ -245,9 +245,23 @@
         position: relative;
         background: #f8f9fa;
         .d-btn {
+          position: relative;
           opacity: 0;
           transition: opacity .35s ease;
+          right: 0;
+          bottom: 0;
+          margin: 3px;
+          font-size: 10px;
+          width: 100%;
         } 
+        .overlay-button {
+          z-index: 3;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%,-50%);
+          width: 70%;
+        }
         &:hover {
           .d-overlay {
             display: block;
