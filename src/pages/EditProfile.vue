@@ -104,8 +104,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next((vm) => {
-      console.log(vm.$store)
-      if (!vm.$store.getters.getIsLogin) {
+      if (!LocalStorage.getItem('access_token')) {
         vm.$router.push('/login')
       }
     })

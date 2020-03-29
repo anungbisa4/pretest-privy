@@ -68,7 +68,7 @@ export default {
         device_token: this.deviceToken,
         device_type: this.deviceType
       }
-      this.$axios.post(this.$API + '/oauth/sign_in', objectToFormData(dataForm))
+      this.$axios.post('/api/v1/oauth/sign_in', objectToFormData(dataForm))
         .then(({ data }) => {
           Loading.hide()
           LocalStorage.set('access_token', data.data.user.access_token)

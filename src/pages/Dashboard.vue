@@ -26,7 +26,7 @@
             <q-icon name="inbox"></q-icon>
           </q-btn>
           </div>
-          <div class="d-logout d-profile-pd"><q-btn outline class="d-btn d-btn__outline d-btn__grey" rounded label="Logout" /></div>
+          <div class="d-logout d-profile-pd"><q-btn outline class="d-btn d-btn__outline d-btn__grey" rounded label="Logout" @click="logout"/></div>
         </div>
         <h1>{{dataProfile.name}}</h1>
         <h2>{{dataProfile.gender || 'Your Gender '}},{{ dataProfile.hometown || ' Hometown' }}</h2>
@@ -138,13 +138,6 @@
               <img :src="item.picture.url" :alt="index">
             </div>
           </div>
-          <!-- <div class="col-4" v-for="(item, index) in dataProfile.user_pictures" :key="index">
-            <div class="d-gallery-item">
-              <img :src="item.picture.url" :alt="index">
-              <div class="d-img-overlay"></div>
-              <div class="d-img-blur" style="background-image:url('statics/cover-sample.jpeg')"></div>
-            </div>
-          </div> -->
         </div>
         <div class="d-gallery-btn">
         <q-btn rounded  class="d-btn" label="Upload" @click="isUploadMultiple = true"/>
@@ -181,7 +174,7 @@ import { Loading, LocalStorage, Notify } from 'quasar'
 // eslint-disable-next-line no-unused-vars
 import { objectToFormData } from 'object-to-formdata'
 import Upload from 'src/components/Upload'
-import axios from 'axios'
+// import axios from 'axios'
 export default {
   name: 'login',
   components: { Upload },
@@ -214,6 +207,17 @@ export default {
     console.log(this.$store)
   },
   methods: {
+    logout () {
+      const formData = {
+        access_token: LocalStorage.getItem('access_token'),
+        confirm: 1
+      }
+      this.$axios.post('/api/v1/oauth/revoke', objectToFormData(formData))
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => console.log(err))
+    },
     factoryFnSingle (file) {
       return new Promise((resolve, reject) => {
         this.$axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
@@ -317,12 +321,11 @@ export default {
     },
     initProfile () {
       Loading.show()
-      axios.defaults.headers.common.Authorization = LocalStorage.getItem('access_token')
-      axios.get('/api/v1/profile/me')
+      this.$fetchApi('/api/v1/profile/me', 'get')
         .then(({ data }) => {
           Loading.hide()
           this.dataProfile = data.data.user
-          console.log(data.data)
+          console.log(data)
         })
         // eslint-disable-next-line handle-callback-err
         .catch((err) => {
@@ -333,8 +336,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next((vm) => {
-      console.log(vm.$store)
-      if (!vm.$store.getters.getIsLogin) {
+      if (!LocalStorage.getItem('access_token')) {
         vm.$router.push('/login')
       }
     })
