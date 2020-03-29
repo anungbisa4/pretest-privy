@@ -11,7 +11,7 @@ export default async ({ app, router, store, Vue }) => {
 
   axios.interceptors.request.use(function (config) {
   // Do something before request is sent
-    console.log(config)
+    // console.log(config)
     return config
   }, function (error) {
   // Do something with request error
@@ -38,7 +38,7 @@ export default async ({ app, router, store, Vue }) => {
             response = await axios.post(url, data)
             resolve(response)
           } catch ({ data }) {
-            if (data.error.code >= 300) {
+            if (data.error.code === 401) {
               router.push('/login')
             }
             reject(data)
@@ -52,7 +52,7 @@ export default async ({ app, router, store, Vue }) => {
             response = await axios.get(url)
             resolve(response)
           } catch ({ data }) {
-            if (data.error.code >= 300) {
+            if (data.error.code === 401) {
               router.push('/login')
             }
             reject(data)

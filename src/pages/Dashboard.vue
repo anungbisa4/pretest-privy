@@ -4,7 +4,7 @@
       <div class="dashboard-cover">
           <q-icon class="icon-edit" name="create" @click="isUploadSingle = true"></q-icon>
         <div class="dashboard-cover-img">
-          <img class="dashboard-cover-img__image" :src="dataProfile && dataProfile.user_picture && dataProfile.cover_picture.url || 'statics/cover-sample.jpeg'" alt="">
+          <img class="dashboard-cover-img__image" :src="listProfile && listProfile.user_picture && listProfile.cover_picture.url || 'statics/cover-sample.jpeg'" alt="">
         </div>
       </div>
       <div class="flex d-avatar">
@@ -12,7 +12,7 @@
           <div class="d-avatar-wrap">
             <q-icon class="icon-edit d-avatar-icon__bottom" name="create" @click="isUploadMultiple = true, isUserPicture = true"></q-icon>
             <button>
-              <img class="d-avatar-img__image" :src="dataProfile && dataProfile.user_picture && dataProfile.user_picture.picture.url" alt="">
+              <img class="d-avatar-img__image" :src="listProfile && listProfile.user_picture && listProfile.user_picture.picture.url" alt="">
             </button>
           </div>
         </div>
@@ -28,13 +28,13 @@
           </div>
           <div class="d-logout d-profile-pd"><q-btn outline class="d-btn d-btn__outline d-btn__grey" rounded label="Logout" @click="logout"/></div>
         </div>
-        <h1>{{dataProfile.name}}</h1>
-        <h2>{{dataProfile.gender || 'Your Gender '}},{{ dataProfile.hometown || ' Hometown' }}</h2>
+        <h1>{{listProfile.name}}</h1>
+        <h2>{{listProfile.gender || 'Your Gender '}},{{ listProfile.hometown || ' Hometown' }}</h2>
       </div>
       <div class="d-about">
         <h1 class="d-about__title d-title">About</h1>
-        <div class="d-about__content" :style="dataProfile.bio !== null ? '' : 'text-align: center;'">
-          <p v-if="dataProfile.bio !== null">{{dataProfile.bio}}</p>
+        <div class="d-about__content" :style="listProfile.bio !== null ? '' : 'text-align: center;'">
+          <p v-if="listProfile.bio !== null">{{listProfile.bio}}</p>
           <div v-else>
             <router-link to="/edit-profile"><q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Bio" /></router-link>
           </div>
@@ -63,17 +63,17 @@
           </q-form>
         </div>
         <div v-if="!isEdit">
-          <div v-if="dataProfile.education && dataProfile.education.school_name === null" :style="dataProfile.education && dataProfile.education.school_name !== null ? '' : 'text-align: center;'">
+          <div v-if="listProfile.education && listProfile.education.school_name === null" :style="listProfile.education && listProfile.education.school_name !== null ? '' : 'text-align: center;'">
           <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Education" @click="isEdit = true"/>
         </div>
-        <div v-if="dataProfile.education && dataProfile.education.school_name !== null" class="flex d-card-item">
+        <div v-if="listProfile.education && listProfile.education.school_name !== null" class="flex d-card-item">
           <q-btn rounded  class="d-btn d-card-btn" label="Update" @click="isEdit = true"/>
           <div class="d-card-item__avatar d-education-avatar">
             <span>ED</span>
           </div>
           <div class="d-card-item__content">
-            <h1>{{ dataProfile.education && dataProfile.education.school_name }}</h1>
-            <span>{{dataProfile.education && dataProfile.education.graduation_time}}</span>
+            <h1>{{ listProfile.education && listProfile.education.school_name }}</h1>
+            <span>{{listProfile.education && listProfile.education.graduation_time}}</span>
           </div>
         </div>
         </div>
@@ -93,8 +93,8 @@
           <q-input rounded outlined v-model="careerForm.starting_from" placeholder="Starting from" mask="date" :rules="['date']">
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                    <q-date v-model="careerForm.starting_from" @input="() => $refs.qDateProxy.hide()" />
+                  <q-popup-proxy ref="qDateProxyStart" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="careerForm.starting_from" @input="() => $refs.qDateProxyStart.hide()" />
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -102,8 +102,8 @@
           <q-input rounded outlined v-model="careerForm.ending_in" placeholder="End in" mask="date" :rules="['date']">
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                    <q-date v-model="careerForm.ending_in" @input="() => $refs.qDateProxy.hide()" />
+                  <q-popup-proxy ref="qDateProxyEnd" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="careerForm.ending_in" @input="() => $refs.qDateProxyEnd.hide()" />
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -114,18 +114,18 @@
           </q-form>
         </div>
         <div v-if="!isEditCareer">
-        <div v-if="dataProfile.career && dataProfile.career.company_name === null" :style="dataProfile.career && dataProfile.career.company_name !== null ? '' : 'text-align: center;'">
+        <div v-if="listProfile.career && listProfile.career.company_name === null" :style="listProfile.career && listProfile.career.company_name !== null ? '' : 'text-align: center;'">
           <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Edit Career" @click="isEditCareer = true"/>
         </div>
-        <div v-if="dataProfile.career && dataProfile.career.company_name !== null" class="flex d-card-item">
+        <div v-if="listProfile.career && listProfile.career.company_name !== null" class="flex d-card-item">
           <q-btn rounded  class="d-btn d-card-btn" label="Update" @click="isEditCareer = true"/>
           <div class="d-card-item__avatar d-career-avatar">
             <span>CA</span>
           </div>
           <div class="d-card-item__content">
-            <h1>{{dataProfile.career && dataProfile.career.company_name}}</h1>
-            <!-- <h2>dataProfile.career.company_name</h2> -->
-            <span>{{dataProfile.career && dataProfile.career.starting_from}} - {{dataProfile.career && dataProfile.career.ending_in}}</span>
+            <h1>{{listProfile.career && listProfile.career.company_name}}</h1>
+            <!-- <h2>listProfile.career.company_name</h2> -->
+            <span>{{listProfile.career && listProfile.career.starting_from}} - {{listProfile.career && listProfile.career.ending_in}}</span>
           </div>
         </div>
         </div>
@@ -133,7 +133,7 @@
       <section class="d-card d-gallery">
         <h1 class="d-about__title d-title">Photos</h1>
         <div class="row">
-          <div class="col-4" v-for="(item, index) in dataProfile.user_pictures" :key="index">
+          <div class="col-4" v-for="(item, index) in listProfile.user_pictures" :key="index">
             <div class="d-gallery-item">
               <img :src="item.picture.url" :alt="index">
             </div>
@@ -170,7 +170,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import '../css/pages/dashboard.scss'
-import { Loading, LocalStorage, Notify } from 'quasar'
+import { LocalStorage, Notify } from 'quasar'
 // eslint-disable-next-line no-unused-vars
 import { objectToFormData } from 'object-to-formdata'
 import Upload from 'src/components/Upload'
@@ -197,6 +197,12 @@ export default {
         starting_from: '',
         ending_in: ''
       }
+    }
+  },
+  computed: {
+    // eslint-disable-next-line vue/no-dupe-keys
+    listProfile: function () {
+      return this.$store.getters.getProfile
     }
   },
   created () {
@@ -269,65 +275,18 @@ export default {
     },
     onSubmitEdit (value) {
       if (value === 'education') {
-        Loading.show()
-        this.$axios.post('/api/v1/profile/education', objectToFormData(this.educationForm))
-          .then(({ data }) => {
-            Loading.hide()
-            this.isEdit = false
-            this.initProfile()
-            Notify.create({
-              type: 'positif',
-              message: 'Succesfully'
-            })
-          })
-        // eslint-disable-next-line handle-callback-err
-          .catch((err) => {
-            Loading.hide()
-            this.isEdit = false
-            console.log(err)
-            Notify.create({
-              type: 'warning',
-              message: err.error.errors[0]
-            })
-          })
+        this.$store.dispatch('updateEducation', objectToFormData(this.educationForm))
+          .then(this.isEdit = false)
+          .catch(this.isEdit = false)
       }
       if (value === 'career') {
-        Loading.show()
-        this.$axios.post('/api/v1/profile/career', objectToFormData(this.careerForm))
-          .then(({ data }) => {
-            Loading.hide()
-            this.isEditCareer = false
-            this.initProfile()
-            Notify.create({
-              type: 'positif',
-              message: 'Succesfully'
-            })
-          })
-        // eslint-disable-next-line handle-callback-err
-          .catch((err) => {
-            Loading.hide()
-            this.isEditCareer = false
-            console.log(err)
-            Notify.create({
-              type: 'warning',
-              message: err.error.errors[0]
-            })
-          })
+        this.$store.dispatch('updateCareer', objectToFormData(this.careerForm))
+          .then(this.isEditCareer = false)
+          .catch(this.isEditCareer = false)
       }
     },
     initProfile () {
-      Loading.show()
-      this.$fetchApi('/api/v1/profile/me', 'get')
-        .then(({ data }) => {
-          Loading.hide()
-          this.dataProfile = data.data.user
-          console.log(data)
-        })
-        // eslint-disable-next-line handle-callback-err
-        .catch((err) => {
-          Loading.hide()
-          console.log(err)
-        })
+      this.$store.dispatch('initProfile')
     }
   }
 }
