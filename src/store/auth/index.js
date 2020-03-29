@@ -65,7 +65,6 @@ export default {
           .catch((err) => {
             Loading.hide()
             commit('AUTH_LOGOUT')
-            console.log(err.error.code)
             // eslint-disable-next-line dot-notation
             delete axios.defaults.headers.common['Authorization']
             Notify.create({

@@ -130,6 +130,39 @@
         </div>
         </div>
       </section>
+      <section class="d-card d-career">
+        <h1 class="d-about__title d-title">Inbox</h1>
+        <div v-if="isMessage">
+        <q-form ref="editForm" @submit="onSubmitEdit('msg')">
+          <q-input v-model="msg.message" autogrow rounded outlined placeholder="Input something here" type="text"
+            lazy-rules
+            :rules="[ val => val && val.length > 0 || 'Please type you position']"
+            />
+          <div style="text-align: center">
+            <q-btn rounded  class="d-btn d-btn-large" label="back" @click="isMessage = false" />
+            <span style="margin: 0 10px;"></span>
+            <q-btn rounded  class="d-btn d-btn-large" label="Send Message" type="submit" />
+          </div>
+          </q-form>
+        </div>
+        <div v-if="!isMessage">
+        <div v-if="listMsg === ''" :style="listMsg !== '' ? '' : 'text-align: center;'">
+          <q-btn rounded outline  class="d-btn d-btn__outline d-btn__grey d-btn-margin" label="Send Message" @click="isMessage = true"/>
+        </div>
+        <div v-if="listMsg !== ''" class="flex d-card-item">
+          <q-btn rounded  class="d-btn d-card-btn" label="Message" @click="isMessage = true"/>
+          <div class="flex d-card-item" v-for="(item, index) in listMsg" :key="index">
+            <div class="d-card-item__avatar d-career-avatar">
+              <span>MSG</span>
+            </div>
+            <div class="d-card-item__content">
+              <h1>{{item.user_sender && item.user_sender.name}}</h1>
+              <span>{{item.message}}</span>
+            </div>
+          </div>
+        </div>
+        </div>
+      </section>
       <section class="d-card d-gallery">
         <h1 class="d-about__title d-title">Photos</h1>
         <div class="row">
@@ -187,6 +220,10 @@ export default {
       isUploadMultiple: false,
       isUploadSingle: false,
       isUserPicture: false,
+      isMessage: false,
+      msg: {
+        message: ''
+      },
       educationForm: {
         school_name: '',
         company_name: ''
@@ -203,14 +240,17 @@ export default {
     // eslint-disable-next-line vue/no-dupe-keys
     listProfile: function () {
       return this.$store.getters.getProfile
+    },
+    listMsg: function () {
+      return this.$store.getters.getInbox
     }
   },
   created () {
     this.initProfile()
+    this.$store.dispatch('getInbox', '9926223e-23e6-4388-82ae-775cbeb6935b')
   },
   mounted () {
     // eslint-disable-next-line no-undef
-    console.log(this.$store)
   },
   methods: {
     logout () {
@@ -219,6 +259,7 @@ export default {
         confirm: 1
       }
       this.$store.dispatch('logout', objectToFormData(formData))
+        .catch(this.$router.push('/login'))
     },
     factoryFnSingle (file) {
       return new Promise((resolve, reject) => {
@@ -283,6 +324,18 @@ export default {
         this.$store.dispatch('updateCareer', objectToFormData(this.careerForm))
           .then(this.isEditCareer = false)
           .catch(this.isEditCareer = false)
+      }
+      if (value === 'msg') {
+        const data = {
+          user_id: this.$store.getters.getUserId,
+          message: this.msg.message
+        }
+        this.$store.dispatch('sendMessage', objectToFormData(data))
+          .then(
+            this.isMessage = false,
+            this.$store.dispatch('getInbox', '9926223e-23e6-4388-82ae-775cbeb6935b')
+          )
+          .catch(this.isMessage = false)
       }
     },
     initProfile () {
