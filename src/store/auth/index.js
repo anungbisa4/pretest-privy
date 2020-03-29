@@ -37,17 +37,17 @@ export default {
             const token = LocalStorage.set('access_token', data.data.user.access_token)
             const user = data.data.user
             commit('AUTH_SUCCESS', token, user)
-            resolve(data)
+            resolve('fsdf')
           })
         // eslint-disable-next-line handle-callback-err
           .catch((err) => {
             Loading.hide()
-            console.log(err)
+            console.log('error login', err)
             Notify.create({
               message: 'Error login, Please try again'
             })
             localStorage.removeItem('access_token')
-            reject(err)
+            reject('error login')
           })
       })
     },

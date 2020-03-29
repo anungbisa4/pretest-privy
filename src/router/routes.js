@@ -4,20 +4,57 @@ const routes = [
     path: '/',
     component: () => import('layouts/DashboardLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Dashboard.vue') },
-      { path: 'edit-profile', component: () => import('pages/EditProfile.vue') }
+      {
+        path: '',
+        component: () => import('pages/Dashboard.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'edit-profile',
+        component: () => import('pages/EditProfile.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
     ],
-    meta: {
-      requiresAuth: true
+    beforeEnter: (to, from, next) => {
+      next((vm) => {
+        if (!vm.$store.getters.getIsLogin) {
+          vm.$router.push('/login')
+        }
+      })
+      next()
     }
   },
   {
     path: '',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: 'login', component: () => import('pages/Login.vue') },
-      { path: 'register', component: () => import('pages/Register.vue') },
-      { path: 'verify', component: () => import('pages/Verify.vue') }
+      {
+        name: 'Login',
+        path: 'login',
+        component: () => import('pages/Login.vue'),
+        meta: {
+          requiresAuth: false
+        }
+      },
+      {
+        name: 'Register',
+        path: 'register',
+        component: () => import('pages/Register.vue'),
+        meta: {
+          requiresAuth: false
+        }
+      },
+      {
+        path: 'verify',
+        component: () => import('pages/Verify.vue'),
+        meta: {
+          requiresAuth: false
+        }
+      }
     ]
   }
 ]
